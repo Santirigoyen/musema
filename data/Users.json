@@ -1,0 +1,99 @@
+{
+    "": {
+        "piezas": {
+            "Moonlight Sonata 3rd": 15511,
+            "The Entertainer": 2877,
+            "Amelie": 6303,
+            "Bohemian Rhapsody": 5045,
+            "Never Gonna Give You Up": 705
+        },
+        "sesiones": {
+            "2026-01-26": [
+                [
+                    "Amelie",
+                    853
+                ],
+                [
+                    "The Entertainer",
+                    417
+                ],
+                [
+                    "Amelie",
+                    296
+                ]
+            ],
+            "2026-01-27": [
+                [
+                    "Moonlight Sonata 3rd",
+                    1742
+                ],
+                [
+                    "Moonlight Sonata 3rd",
+                    688
+                ],
+                [
+                    "The Entertainer",
+                    233
+                ]
+            ],
+            "2026-01-28": [
+                [
+                    "Bohemian Rhapsody",
+                    1196
+                ],
+                [
+                    "The Entertainer",
+                    362
+                ],
+                [
+                    "Bohemian Rhapsody",
+                    504
+                ]
+            ],
+            "2026-01-29": [
+                [
+                    "The Entertainer",
+                    284
+                ],
+                [
+                    "Never Gonna Give You Up",
+                    312
+                ]
+            ],
+            "2026-01-30": [
+                [
+                    "Moonlight Sonata 3rd",
+                    2461
+                ],
+                [
+                    "Amelie",
+                    712
+                ]
+            ],
+            "2026-01-31": [
+                [
+                    "Moonlight Sonata 3rd",
+                    1388
+                ],
+                [
+                    "The Entertainer",
+                    527
+                ],
+                [
+                    "Amelie",
+                    441
+                ]
+            ],
+            "2026-02-01": [
+                [
+                    "Bohemian Rhapsody",
+                    907
+                ],
+                [
+                    "Moonlight Sonata 3rd",
+                    603
+                ]
+            ]
+        }
+    }
+}

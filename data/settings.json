@@ -1,0 +1,34 @@
+{
+    "app_size": [800, 500],
+    "font": "Segoe UI",
+    "fontsizes": {
+        "title": 45,
+        "normal": 25,
+        "small": 12
+    },
+    "colors": {
+        "text": "#FFFFFF",
+        "bg": "#272727",
+        "light": "#404040",
+        "lighter": "#808080",
+        "mid": "#212121",
+        "dark": "#1C1C1C",
+        "darker": "#141414",
+        "green": "#498D51",
+        "light-green": "#67C067",
+        "red": "#C71F35",
+        "light-red": "#D8465A"
+    },
+    "images": {
+        "play": "C:\\Users\\Santi\\Documents\\Music Session Management\\assets\\triangle.png",
+        "finish": "C:\\Users\\Santi\\Documents\\Music Session Management\\assets\\Finish.png",
+        "piano": "C:\\Users\\Santi\\Documents\\Music Session Management\\assets\\piano.png",
+        "stats": "C:\\Users\\Santi\\Documents\\Music Session Management\\assets\\stats.png",
+        "pause": "C:\\Users\\Santi\\Documents\\Music Session Management\\assets\\pause.png",
+        "back": "C:\\Users\\Santi\\Documents\\Music Session Management\\assets\\back.png",
+        "trash": "C:\\Users\\Santi\\Documents\\Music Session Management\\assets\\trash.png",
+        "export": "C:\\Users\\Santi\\Documents\\Music Session Management\\assets\\export.png",
+        "reload": "C:\\Users\\Santi\\Documents\\Music Session Management\\assets\\reload.png",
+        "icon": "C:\\Users\\Santi\\Documents\\Music Session Management\\assets\\musema.ico"
+    }
+}
