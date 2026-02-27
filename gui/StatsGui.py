@@ -212,3 +212,11 @@ class MonthStats(CTkScrollableFrame):
                         SessionData(self, date, name, time
                         ).grid(row = index, column=0, sticky='nsew', pady=2)
                         index += 1
+
+        # Show/Hide no data message
+        if len(self.winfo_children()) == 0:
+            CTkLabel(self,
+                text="No hay sesiones guardadas.",
+                text_color=COLORS['light-red'],
+                font=(FONT, FONTS['small'] * 1.5, "bold")
+            ).grid(row=0,sticky='ns')

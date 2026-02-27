@@ -35,7 +35,7 @@ class PieceFrame(CTkFrame):
         # No pieces message
         self.piece_msg = CTkLabel(self,
             text='No tienes piezas guardadas.',
-            font=(FONT, FONTS['normal'], 'bold'),
+            font=(FONT, FONTS['normal']),
             text_color=COLORS['light-red'],
             fg_color=COLORS['dark'])
         self.piece_msg.grid(row=2, sticky='w', padx=95, pady=(22.5, 0))
@@ -43,7 +43,6 @@ class PieceFrame(CTkFrame):
         # Selection
         self.selectables = {}
         self.checkboxes = {}
-        self.piece_update()
 
         # Entry box
         self.entry = CTkEntry(self,
@@ -88,22 +87,25 @@ class PieceFrame(CTkFrame):
             image=CTkImage(IMGs['trash']),
             hover_color=COLORS['bg'],
             fg_color=COLORS['dark'],
-            command=self.del_selected
-        ).grid(row=2, sticky='ne', padx=30, pady=(20, 0))
+            command=self.del_selected)
+        
+        self.piece_update()
     
     def piece_update(self):
+        # Delete All
         for widget in self.scroller.winfo_children():
             widget.destroy()
         self.selectables.clear()
         self.checkboxes.clear()
 
-        for i, piece in enumerate(self.user.data['piezas']):
-
+        for piece in self.user.data['piezas']:
+            # Create label per piece
             self.selectables[piece] = CTkLabel(self.scroller,
                 text=piece,
                 font=(FONT, FONTS['normal']))
             self.selectables[piece].grid(row=len(self.selectables) - 1, column=0, sticky='w', padx=10)
 
+            # Create checkbox per label
             self.checkboxes[piece] = CTkCheckBox(self.scroller,
                 border_color=COLORS['darker'],
                 fg_color=COLORS['bg'],
@@ -111,16 +113,18 @@ class PieceFrame(CTkFrame):
                 hover=False,
                 text='',
                 width=0,
-                height=24)
+                height=24,
+                command=self.trash_shown)
             self.checkboxes[piece].grid(row=len(self.selectables) - 1, column=1, sticky='e', padx=10)
         
+        # Hide trash
+        self.trash_shown()
+
+        # Show/Hide no piece msg
         if len(self.user.data['piezas']) == 0:
-            self.piece_msg.configure(text_color=COLORS['light-red'], fg_color=COLORS['dark'])
             self.piece_msg.grid(row=2, sticky='w', padx=95, pady=(22.5, 0))
         else:
-            self.piece_msg.configure(text_color=COLORS['bg'], fg_color = COLORS['bg'])
-            self.piece_msg.grid(row=0, sticky='ne')
-            
+            self.piece_msg.grid_forget()
     
     def piece_add(self):
         piece = self.entry.get()
@@ -148,3 +152,15 @@ class PieceFrame(CTkFrame):
     def warn_over_length(self):
         self.length_warning.configure(text_color=COLORS['light'])
         self.after(1000, lambda: self.length_warning.configure(text_color=COLORS['bg']))
+
+    def trash_shown(self):
+        any_selected = False
+
+        for _, cb in self.checkboxes.items():
+            if cb.get():
+                any_selected = True
+
+        if any_selected:
+            self.trash.grid(row=2, sticky='ne', padx=30, pady=(20, 0))
+        else:
+            self.trash.grid_forget()
