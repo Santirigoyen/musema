@@ -75,7 +75,7 @@ class SessionFrame(CTkFrame):
             self.choice.set(list(self.user.data['piezas'].keys())[0])
         else: self.choice.set('...')
 
-class SessionFrame2(CTkFrame):
+class TimerFrame(CTkFrame):
     def __init__(self, parent):
         super().__init__(parent, fg_color=COLORS['bg'], border_width=0, corner_radius=0)
         self.parent = parent

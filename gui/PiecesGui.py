@@ -6,7 +6,8 @@ COLORS = settings['colors']
 FONTS = settings['fontsizes']
 FONT = settings['font']
 IMGs = {
-    'trash': Image.open(settings['images']['trash'])
+    'trash': Image.open(settings['images']['trash']),
+    'plus': Image.open(settings['images']['plus'])
 }
 
 class PieceFrame(CTkFrame):
@@ -28,8 +29,16 @@ class PieceFrame(CTkFrame):
         # Scroller
         self.scroller = CTkScrollableFrame(self,
             fg_color=COLORS['dark'])
-        self.scroller.grid(row=2, sticky='nsew', rowspan=5, padx=80, pady=20)
+        self.scroller.grid(row=2, sticky='nsew', rowspan=4, padx=80, pady=20)
         self.scroller.grid_columnconfigure((0,1), weight=1)
+        
+        # No pieces message
+        self.piece_msg = CTkLabel(self,
+            text='No tienes piezas guardadas.',
+            font=(FONT, FONTS['normal'], 'bold'),
+            text_color=COLORS['light-red'],
+            fg_color=COLORS['dark'])
+        self.piece_msg.grid(row=2, sticky='w', padx=95, pady=(22.5, 0))
 
         # Selection
         self.selectables = {}
@@ -44,7 +53,7 @@ class PieceFrame(CTkFrame):
             text_color=COLORS['text'],
             placeholder_text='Añadir pieza',
             width=405)
-        self.entry.grid(row=7, sticky='nsw', padx=80, pady=(0, 20))
+        self.entry.grid(row=6, sticky='nsw', padx=80, pady=(0, 20))
         self.entry.bind("<Escape>", lambda e: self.focus())
         self.entry.bind("<Return>", lambda e: self.piece_add())
 
@@ -60,14 +69,15 @@ class PieceFrame(CTkFrame):
         # + Button
         self.plus = CTkButton(self,
             font=(FONT, FONTS['title'], 'bold'),
-            text='+',
+            text='',
+            image=CTkImage(IMGs['plus']),
             width=20,
             corner_radius=100,
             text_color=COLORS['text'],
             fg_color=COLORS['green'],
             hover_color=COLORS['light-green'],
             command=self.piece_add)
-        self.plus.grid(row=7, sticky='nse', padx=80, pady=(0, 20))
+        self.plus.grid(row=6, sticky='nse', padx=80, pady=(0, 20))
 
         # Trash
         self.trash = CTkButton(self,
@@ -103,6 +113,14 @@ class PieceFrame(CTkFrame):
                 width=0,
                 height=24)
             self.checkboxes[piece].grid(row=len(self.selectables) - 1, column=1, sticky='e', padx=10)
+        
+        if len(self.user.data['piezas']) == 0:
+            self.piece_msg.configure(text_color=COLORS['light-red'], fg_color=COLORS['dark'])
+            self.piece_msg.grid(row=2, sticky='w', padx=95, pady=(22.5, 0))
+        else:
+            self.piece_msg.configure(text_color=COLORS['bg'], fg_color = COLORS['bg'])
+            self.piece_msg.grid(row=0, sticky='ne')
+            
     
     def piece_add(self):
         piece = self.entry.get()
