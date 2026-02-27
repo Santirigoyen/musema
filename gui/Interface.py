@@ -3,7 +3,7 @@ from back.User import User
 from customtkinter import *
 from tkinter import PhotoImage
 from gui.StatsGui import StatsFrame
-from gui.SessionGui import SessionFrame, SessionFrame2
+from gui.SessionGui import SessionFrame, TimerFrame
 from gui.PiecesGui import PieceFrame
 from PIL import Image
 
@@ -48,7 +48,6 @@ class MenuButton(CTkButton):
     def __init__(self, parent, row, text, img, cmd):
         super().__init__(parent,
             fg_color=COLORS['dark'],
-            border_width=0,
             text=text,
             text_color=COLORS['text'],
             font=(FONT, FONTS['small']),
@@ -99,14 +98,17 @@ class MainFrame(CTkFrame):
             SessionFrame(self),
             PieceFrame(self),
             StatsFrame(self),
-            SessionFrame2(self)
+            TimerFrame(self)
         ]
         for mf in self.menu_frames:
             mf.grid(column=1,row=0,columnspan=4,sticky='nsew')
 
-        self.current = 4
+        self.current = -1
         
-        self.menu(0)
+        if len(self.user.data['piezas']) == 0:
+            self.sidebar.change_menu(1, self.menu)
+        else:
+            self.sidebar.change_menu(0, self.menu)
 
 
 class LoginFrame(CTkFrame):
