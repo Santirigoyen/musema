@@ -1,8 +1,8 @@
 import matplotlib.pyplot as plt
 
 def monthly_pie_chart(user, month_title, month):
+    if len(user.data['sesiones']) == 0: return
     month_str = f"-{month:02d}-" # Feb: -02-
-    print(month_str)
 
     data = {}
     for date, sessions in reversed(user.data['sesiones'].items()):
@@ -12,7 +12,8 @@ def monthly_pie_chart(user, month_title, month):
             total = data.get(name, 0) + dur
             if total == 0: continue
             data[name] = total
-    
+    if len(data) == 0: return
+
     vals = data.values()
     keys = data.keys()
     
@@ -30,18 +31,25 @@ def monthly_pie_chart(user, month_title, month):
         plt.show()
 
 def piece_graph(user, piece):
-    plt.clf()
+    if len(user.data['sesiones']) == 0: return
 
-    keys = []
-    vals = []
-
+    data = {}
     for date, sessions in user.data['sesiones'].items():
         for name, dur in sessions:
             if name == piece: 
-                keys.append(f"{int(date.split('-')[2])}/{int(date.split('-')[1])}") # 2026-02-16 → 16/2
-                vals.append(dur/60)
+                key = f"{int(date.split('-')[2])}/{int(date.split('-')[1])}" # 2026-02-16 → 16/2
+                data[key] = dur / 60
+    
+    one_day = True
+    for k, v in data.items():
+        if k != list(data.keys())[0]: one_day = False
+    if one_day: return
+
+    plt.clf()
+
+    vals = data.values()
+    keys = data.keys()
     
     plt.plot(keys, vals, linewidth=4)
 
-    if len(keys) > 1:
-        plt.show()
+    plt.show()
