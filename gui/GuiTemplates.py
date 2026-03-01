@@ -88,7 +88,6 @@ class EntryBox(CTkEntry):
             text_color=COLORS['text'],
             placeholder_text=placeholder,
             width=width)
-        # border_width=0
 
 class WarningLabel(CTkLabel):
     def __init__(self, parent, text, font, fg_color=COLORS['dark']):
