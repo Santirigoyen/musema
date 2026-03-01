@@ -86,7 +86,7 @@ class StatsFrame(CTkFrame):
         self.scroller.update_month(self.mes_index())
 
     def previous_month(self):
-        self.month.set(meses[self.mes_index() % datetime.date.today().month]) # Set previous or wrap
+        self.month.set(meses[(self.mes_index() - 2) % datetime.date.today().month]) # Set previous or wrap
 
         self.scroller.update_month(self.mes_index())
 
