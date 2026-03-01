@@ -5,11 +5,18 @@ import datetime
 user_file_path = Path(__file__).parent.parent / "data" / "Users.json"
 settings_file_path = Path(__file__).parent.parent / "data" / "settings.json"
 
-with settings_file_path.open("r") as f:
-    settings = json.load(f)
+def load_json(path):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        with path.open("r") as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        with path.open("w") as f:
+            json.dump({}, f, indent=4)
+        return {}
 
-with user_file_path.open("r") as f:
-    user_data = json.load(f)
+settings = load_json(settings_file_path)
+user_data = load_json(user_file_path)
 
 def save_data():
     with user_file_path.open("w") as f:

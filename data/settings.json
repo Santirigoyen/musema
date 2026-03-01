@@ -20,18 +20,18 @@
         "light-red": "#D8465A"
     },
     "images": {
-        "play": "C:\\Users\\Santi\\Documents\\Music Session Management\\assets\\triangle.png",
-        "finish": "C:\\Users\\Santi\\Documents\\Music Session Management\\assets\\Finish.png",
-        "piano": "C:\\Users\\Santi\\Documents\\Music Session Management\\assets\\piano.png",
-        "stats": "C:\\Users\\Santi\\Documents\\Music Session Management\\assets\\stats.png",
-        "pause": "C:\\Users\\Santi\\Documents\\Music Session Management\\assets\\pause.png",
-        "plus": "C:\\Users\\Santi\\Documents\\Music Session Management\\assets\\plus.png",
-        "back": "C:\\Users\\Santi\\Documents\\Music Session Management\\assets\\back.png",
-        "trash": "C:\\Users\\Santi\\Documents\\Music Session Management\\assets\\trash.png",
-        "export": "C:\\Users\\Santi\\Documents\\Music Session Management\\assets\\export.png",
-        "reload": "C:\\Users\\Santi\\Documents\\Music Session Management\\assets\\reload.png",
-        "icon": "C:\\Users\\Santi\\Documents\\Music Session Management\\assets\\musema.ico",
-        "right_arrow": "C:\\Users\\Santi\\Documents\\Music Session Management\\assets\\right_arrow.png",
-        "left_arrow": "C:\\Users\\Santi\\Documents\\Music Session Management\\assets\\left_arrow.png"
+        "play": "assets/triangle.png",
+        "finish": "assets/Finish.png",
+        "piano": "assets/piano.png",
+        "stats": "assets/stats.png",
+        "pause": "assets/pause.png",
+        "plus": "assets/plus.png",
+        "back": "assets/back.png",
+        "trash": "assets/trash.png",
+        "export": "assets/export.png",
+        "reload": "assets/reload.png",
+        "icon": "assets/musema.ico",
+        "right_arrow": "assets/right_arrow.png",
+        "left_arrow": "assets/left_arrow.png"
     }
 }
