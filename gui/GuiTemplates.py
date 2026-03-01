@@ -11,7 +11,11 @@ IMGs = {
     'plus': Image.open(settings['images']['plus']),
     'play': Image.open(settings['images']['play']),
     'pause': Image.open(settings['images']['pause']),
-    'back': Image.open(settings['images']['back'])
+    'back': Image.open(settings['images']['back']),
+    'reload': Image.open(settings['images']['reload']),
+    'export': Image.open(settings['images']['export']),
+    'right_arrow': Image.open(settings['images']['right_arrow']),
+    'left_arrow': Image.open(settings['images']['left_arrow'])
 }
 
 class BaseLabel(CTkLabel):
