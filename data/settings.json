@@ -30,6 +30,8 @@
         "trash": "C:\\Users\\Santi\\Documents\\Music Session Management\\assets\\trash.png",
         "export": "C:\\Users\\Santi\\Documents\\Music Session Management\\assets\\export.png",
         "reload": "C:\\Users\\Santi\\Documents\\Music Session Management\\assets\\reload.png",
-        "icon": "C:\\Users\\Santi\\Documents\\Music Session Management\\assets\\musema.ico"
+        "icon": "C:\\Users\\Santi\\Documents\\Music Session Management\\assets\\musema.ico",
+        "right_arrow": "C:\\Users\\Santi\\Documents\\Music Session Management\\assets\\right_arrow.png",
+        "left_arrow": "C:\\Users\\Santi\\Documents\\Music Session Management\\assets\\left_arrow.png"
     }
 }

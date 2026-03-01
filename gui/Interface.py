@@ -1,11 +1,11 @@
 from back.DataManager import *
 from back.User import User
 from customtkinter import *
-from tkinter import PhotoImage
 from gui.StatsGui import StatsFrame
 from gui.SessionGui import SessionFrame, TimerFrame
 from gui.PiecesGui import PieceFrame
 from PIL import Image
+import gui.GuiTemplates as gui
 
 COLORS = settings['colors']
 FONTS = settings['fontsizes']
@@ -30,9 +30,9 @@ class Sidebar(CTkFrame):
 
         # Menu Buttons
         self.options = [
-            MenuButton(self, 0, 'Sesión', IMGs['play'], lambda: self.change_menu(0, p_menu)),
-            MenuButton(self, 1, 'Piezas', IMGs['piano'], lambda: self.change_menu(1, p_menu)),
-            MenuButton(self, 2, 'Estadísticas', IMGs['stats'], lambda: self.change_menu(2, p_menu))
+            gui.MenuButton(self, 0, 'Sesión', IMGs['play'], lambda: self.change_menu(0, p_menu)),
+            gui.MenuButton(self, 1, 'Piezas', IMGs['piano'], lambda: self.change_menu(1, p_menu)),
+            gui.MenuButton(self, 2, 'Estadísticas', IMGs['stats'], lambda: self.change_menu(2, p_menu))
         ]
         self.options[0].configure(fg_color=COLORS['bg'])
     
@@ -43,23 +43,6 @@ class Sidebar(CTkFrame):
         for button in self.options:
             button.configure(fg_color=COLORS['dark'])
         self.options[index].configure(fg_color=COLORS['bg'])
-
-class MenuButton(CTkButton):
-    def __init__(self, parent, row, text, img, cmd):
-        super().__init__(parent,
-            fg_color=COLORS['dark'],
-            text=text,
-            text_color=COLORS['text'],
-            font=(FONT, FONTS['small']),
-            image=CTkImage(img),
-            compound='left',
-            anchor='w',
-            border_spacing=6,
-            corner_radius=8,
-            command=cmd,
-            hover_color=COLORS['mid'])
-
-        self.grid(row=row, padx=6, pady=3, sticky='nsew')
 
 # Main stuff
 
@@ -77,23 +60,10 @@ class MainFrame(CTkFrame):
 
         self.user: User
 
-    def menu(self, i):
-        if self.current == i: return
-        self.current = i
-        self.focus()
-        current = self.menu_frames[i]
-        current.tkraise()
-        if i == 0: current.update_options()
-    
-    def start_session(self, piece):
-        if self.user == None: return
-        self.menu_frames[3].choice.set(piece)
-        self.menu_frames[3].initimer(piece)
-        self.menu_frames[3].update_recorded()
-        self.menu(3)
-
     def setup(self, user):
         self.user = user
+
+        # Create menus
         self.menu_frames = [
             SessionFrame(self),
             PieceFrame(self),
@@ -104,11 +74,29 @@ class MainFrame(CTkFrame):
             mf.grid(column=1,row=0,columnspan=4,sticky='nsew')
 
         self.current = -1
-        
+
+        # Set to initial menu        
         if len(self.user.data['piezas']) == 0:
             self.sidebar.change_menu(1, self.menu)
         else:
             self.sidebar.change_menu(0, self.menu)
+
+    def menu(self, i):
+        if self.current == i: return
+        self.current = i
+        self.focus()
+        current = self.menu_frames[i]
+        current.tkraise()
+        if i == 0: current.update_options()
+    
+    def start_session(self, piece):
+        if self.user == None: return
+        timer_f = self.menu_frames[3]
+
+        timer_f.choice.set(piece)
+        timer_f.initimer(piece)
+        timer_f.update_recorded()
+        self.menu(3)
 
 
 class LoginFrame(CTkFrame):
@@ -120,22 +108,9 @@ class LoginFrame(CTkFrame):
         self.grid_rowconfigure((0,1,2,3,4,5), weight=1)
         self.grid_columnconfigure(0, weight=1)
 
-        # Login Title
-        CTkLabel(self,
-            text='Login',
-            font=(FONT, FONTS['title'], 'bold'),
-            text_color=COLORS['text'],
-            fg_color=COLORS['bg']
-        ).grid(row=2)
+        gui.TitleLabel(self, 'Login').grid(row=2)
 
-        # Username Textbox
-        self.textbox = CTkEntry(self,
-            font=(FONT,
-            FONTS['normal']),
-            fg_color=COLORS['dark'],
-            border_width=0,
-            text_color=COLORS['text'],
-            placeholder_text='Username')
+        self.textbox = gui.EntryBox(self, 'Username')
         self.textbox.grid(row=3, sticky='ew', padx=95, pady=25)
         
         self.username = ''
@@ -154,25 +129,33 @@ class App(CTk):
     def __init__(self):
         super().__init__()
 
-        # Window CONFIG
-        self.title('Musema')
-        self.iconbitmap(default=settings['images']['icon'])
-        self.grid_rowconfigure(0, weight=1)
-        self.grid_columnconfigure(0, weight=1)
-        self.configure(fg_color=COLORS['bg'])
-
-        # Main Frames
-        self.login = LoginFrame(self)
-        self.main = MainFrame(self)
-        self.login.grid(row=0,column=0,sticky="nsew")
-        self.main.grid(row=0,column=0,sticky="nsew")
+        self.window_config()
+        self.create_frames()
 
         self.user = None
 
         self.login_setup()
         self.login.tkraise()
+
+    def window_config(self):
+
+        self.title('Musema')
+        self.iconbitmap(default=settings['images']['icon'])
+
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+
+        self.configure(fg_color=COLORS['bg'])
+
+    def create_frames(self):
+
+        self.login = LoginFrame(self)
+        self.main = MainFrame(self)
+        self.login.grid(row=0,column=0,sticky="nsew")
+        self.main.grid(row=0,column=0,sticky="nsew")
     
     def access(self):
+
         offset_x = (settings['app_size'][0] - 500) // 2
         offset_y = (settings['app_size'][1] - 400) // 2
 
@@ -185,6 +168,7 @@ class App(CTk):
         self.main.tkraise()
     
     def login_setup(self):
+
         self.geometry('500x400')
         self.resizable(False, False)
 

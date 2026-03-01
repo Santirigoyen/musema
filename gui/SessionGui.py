@@ -1,6 +1,7 @@
 from customtkinter import *
 from back.DataManager import *
 from back.SessionTimer import Timer
+import gui.GuiTemplates as gui
 from PIL import Image
 
 COLORS = settings['colors']
@@ -23,48 +24,24 @@ class SessionFrame(CTkFrame):
         self.parent = parent
         self.user = parent.user
 
-        # Title
-        CTkLabel(self,
-            text='Sesión',
-            font=(FONT, FONTS['title'], 'bold'),
-            text_color=COLORS['text'],
-            fg_color=COLORS['bg']
-        ).grid(row=1, sticky='w', padx=90)
-        
+        self.setup_labels()
+    
+    def setup_labels(self):
 
-        pieces = list(self.user.data['piezas'])
+        # Title
+        gui.TitleLabel(self, 'Sesión').grid(row=1, sticky='w', padx=90)
+
         # Dropdown
-        self.choice = CTkOptionMenu(self,
-            font=(FONT, FONTS['normal']),
-            dropdown_font=(FONT, FONTS['normal']*0.75),
-            dropdown_fg_color=COLORS['bg'],
-            text_color=COLORS['text'],
-            dropdown_text_color=COLORS['text'],
-            fg_color=COLORS['dark'],
-            button_color=COLORS['dark'],
-            width=380,
-            height=55,
-            corner_radius=10,
-            hover=False,
-            dynamic_resizing=False,
-            values= ['...'] if len(pieces) == 0 else pieces)
-        
+        pieces = list(self.user.data['piezas'])
+
+        self.choice = gui.Dropdown(self, 380, 55,
+            pieces, len(pieces) == 0)
         self.choice.grid(row=2, sticky='w', padx=80)
 
         # → Button
-        self.next = CTkButton(self,
-            font=(FONT, FONTS['normal'], 'bold'),
-            text='→',
-            text_color=COLORS['text'],
-            fg_color=COLORS['green'],
-            hover_color=COLORS['light-green'],
-            height=50,
-            width=80,
-            corner_radius=10,
-            command=self.start_session)
-        
+        self.next = gui.SpecialLabButton(self, '→', self.start_session)
         self.next.grid(row=2, sticky='e', padx=80)
-    
+
     def start_session(self):
         if len(self.user.data['piezas']) > 0:
             self.parent.start_session(self.choice.get())
@@ -85,95 +62,44 @@ class TimerFrame(CTkFrame):
         self.grid_rowconfigure((0,1,2,3,4,5,6,7), weight=1, uniform='a')
         self.grid_columnconfigure(0, weight=1)
 
+        self.setup_labels()
+    
+    def setup_labels(self):
+
         # Title
         self.choice = StringVar()
 
-        CTkLabel(self,
-            textvariable=self.choice,
-            font=(FONT, FONTS['title'], 'bold'),
-            text_color=COLORS['text'],
-            fg_color=COLORS['bg']
-        ).grid(row=1, sticky='we')
+        gui.TitleVar(self, self.choice).grid(row=1, sticky='we')
 
         # Clock BG
-        CTkFrame(self,
-            fg_color=COLORS['dark'],
-            corner_radius=20
-        ).grid(row=2, rowspan=2, padx=120, pady=20, sticky='nsew')
+        gui.DarkFrame(self).grid(row=2, rowspan=2, padx=120, pady=20, sticky='nsew')
 
         # Clock Label
         self.number = StringVar(value='00:00:00')
         self.milinum = StringVar(value='.00')
 
-        CTkLabel(self,
-            textvariable=self.number,
-            font=(FONT, FONTS['title'] * 1.475),
-            text_color=COLORS['text'],
-            fg_color=COLORS['dark'],
-            corner_radius=0,
+        gui.BaseVarLabel(self, self.number, FONTS['title'] * 1.475
         ).grid(row=2, rowspan=2, padx=170, pady=20, sticky='w')
 
-        CTkLabel(self,
-            textvariable=self.milinum,
-            font=(FONT, FONTS['title']),
-            text_color=COLORS['text'],
-            fg_color=COLORS['dark'],
-            height=0,
-            width=0
+        gui.BaseVarLabel(self, self.milinum
         ).grid(row=2, rowspan=2, padx=170, pady=38, sticky='se')
 
         # Recorded Label
-        self.recorded_lab = CTkLabel(self,
-            text='Sesión guardada exitósamente!',
-            font=(FONT, FONTS['normal'], 'bold'),
-            fg_color=COLORS['bg'],
-            text_color=COLORS['bg'])
-        self.recorded_lab.grid(row=6, sticky='new')
+        self.recorded_lab = gui.BaseLabel(self, 'Sesión guardada exitósamente!', (FONT, FONTS['normal'], 'bold'))
 
         # Back
-        CTkButton(self,
-            image=CTkImage(IMGs['back']),
-            fg_color=COLORS['bg'],
-            anchor='w',
-            corner_radius=35,
-            width=0,
-            height=70,
-            text='',
-            hover=False,
-            command=self.back
-        ).grid(row=0,sticky='w')
+        gui.IconButton(self, 'back', self.back, COLORS['bg'], 0, 70).grid(row=0,sticky='w')
 
         # Confirm cancel
-        self.cancel_confirm = CTkLabel(self,
-            text='Cancelar sesión?',
-            font=(FONT, FONTS['normal'], 'bold'),
-            fg_color=COLORS['bg'],
-            text_color=COLORS['bg'])
+        self.cancel_confirm = gui.BaseLabel(self, 'Cancelar sesión?', (FONT, FONTS['normal'], 'bold'))
         self.cancel_confirm.grid(row=0,sticky='w',padx=80)
 
         # Play
-        self.play_b = CTkButton(self,
-            image=CTkImage(IMGs['play']),
-            fg_color=COLORS['green'],
-            anchor='w',
-            corner_radius=50,
-            width=0,
-            height=100,
-            text='',
-            hover_color=COLORS['light-green'],
-            command=self.play_timer)
+        self.play_b = gui.SpecialImgButton(self, 'play', self.play_timer, 0, 100, 50)
         self.play_b.grid(row=4, padx=170, sticky='w')
 
         # Pause
-        self.pause_b = CTkButton(self,
-            image=CTkImage(IMGs['pause']),
-            fg_color=COLORS['light'],
-            corner_radius=50,
-            width=0,
-            height=100,
-            text='',
-            hover_color=COLORS['bg'],
-            command=self.pause_timer)
+        self.pause_b = gui.SpecialImgButton(self, 'pause', self.pause_timer, 0, 100, 50, COLORS['light'], COLORS['bg'])
         self.pause_b.grid(row=4, padx=170, sticky='e')
 
     def pause_timer(self):
@@ -189,14 +115,14 @@ class TimerFrame(CTkFrame):
     def play_timer(self):
         if self.timer.running or self.timer.paused: # reset
 
-            self.recorded_lab.configure(text_color=COLORS['light'])
+            self.recorded_lab.grid(row=6, sticky='new')
             self.play_b.configure(image=CTkImage(IMGs['play']), fg_color=COLORS['green'], hover_color=COLORS['light-green'])
             self.pause_b.configure(image=CTkImage(IMGs['pause']))
             self.cancel_confirm.configure(text_color=COLORS['bg'])
 
         elif not self.timer.paused: # play
 
-            self.recorded_lab.configure(text_color=COLORS['bg'])
+            self.recorded_lab.grid_forget()
             self.play_b.configure(image=CTkImage(IMGs['finish']), fg_color=COLORS['red'], hover_color=COLORS['light-red'])
         
         self.timer.play()
