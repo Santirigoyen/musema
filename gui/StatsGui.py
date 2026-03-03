@@ -1,12 +1,14 @@
 from customtkinter import *
-from back.DataManager import *
+import back.DataManager as dm
 from back.GraphManager import *
 import gui.GuiTemplates as gui
-from PIL import Image
+import datetime
 
-COLORS = settings['colors']
-FONTS = settings['fontsizes']
-FONT = settings['font']
+# import time # uncomment for Performance check
+
+COLORS = dm.settings['colors']
+FONTS = dm.settings['fontsizes']
+FONT = dm.settings['font']
 
 meses = [
     "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
@@ -67,16 +69,21 @@ class StatsFrame(CTkFrame):
         self.scroller.grid(row=4, rowspan=5, sticky='nsew', padx=(90, 125), pady=(5,30))
 
     def update_options(self):
+        
+        # Dropdown update
+        piece_history = [item[0] for item in self.user.data['piezas'].values()]
 
-        self.piece_options.configure(values=list(self.user.data['piezas'].keys()))
+        self.piece_options.configure(values=piece_history)
         
         if len(self.user.data['piezas']) > 0:
-            self.piece_options.set(list(self.user.data['piezas'].keys())[0])
+            self.piece_options.set(piece_history[0])
         else: self.piece_options.set('...')
 
+        # Month frame update
         self.month.set(self.get_mes())
         self.scroller.update_month(self.mes_index())
 
+        # Anti Spamming
         self.reloader.configure(state=DISABLED)
         self.after(300, lambda: self.reloader.configure(state=NORMAL))
 
@@ -95,35 +102,24 @@ class StatsFrame(CTkFrame):
 
     def mes_index(self):
         return meses.index(self.month.get()) + 1
-        
+
 
 class SessionData(CTkFrame):
-    def __init__(self, parent, date, piece, time):
+    def __init__(self, parent, display):
         super().__init__(parent, fg_color=COLORS['light'])
-
-        self.month = date.split('-')[1]
-        self.day = date.split('-')[2]
-        self.time = time
 
         self.grid_columnconfigure(0, weight=3)
         self.grid_columnconfigure(1, weight=1)
 
-        CTkLabel(self, text=f'{self.day}/{self.month}', text_color=COLORS['lighter'], font=(FONT, FONTS['small'] * 1.3), width=0).grid(row=0, column=0, sticky='w', padx=10)
-        CTkLabel(self, text=piece, font=(FONT, FONTS['small'] * 1.3), text_color=COLORS['text']).grid(row=0, column=0, sticky='w', padx=60)
-        CTkLabel(self, text=self.get_time_str(), font=(FONT, FONTS['small'] * 1.3, 'bold'), text_color=COLORS['text'], width=1).grid(row=0, column=2,  sticky='e', padx=10)
+        CTkLabel(self, text=display[0], text_color=COLORS['lighter'], font=(FONT, FONTS['small'] * 1.3), width=0
+        ).grid(row=0, column=0, sticky='w', padx=10)
 
-    def get_time_str(self):
-        m = (self.time % 3600) // 60
-        h = self.time // 3600
+        CTkLabel(self, text=display[1], font=(FONT, FONTS['small'] * 1.3), text_color=COLORS['text']
+        ).grid(row=0, column=0, sticky='w', padx=60)
 
-        if h != 0 and m != 0:
-            return f'{h}h {m} min'
-        if h == 0 and m == 0:
-            return f'{self.time % 60} seg'
-        if h == 0:
-            return f'{m} min'
-        
-        return f'{h}h'
+        CTkLabel(self, text=display[2], font=(FONT, FONTS['small'] * 1.3, 'bold'), text_color=COLORS['text'], width=1
+        ).grid(row=0, column=2,  sticky='e', padx=10)
+
 
 class MonthStats(CTkScrollableFrame):
     def __init__(self, parent, month):
@@ -141,16 +137,21 @@ class MonthStats(CTkScrollableFrame):
         # Deletion
         for element in self.winfo_children(): element.destroy()
 
-        # Show data
-        index = 0
-        for date, sessions in reversed(self.user.data['sesiones'].items()):
-            if f'{datetime.date.today().year}-{month:02}-' not in date: continue
-            for name, time in sessions:
-                if time == 0: continue
-                SessionData(self, date, name, time).grid(row = index, column=0, sticky='nsew', pady=2)
-                index += 1
+        # frames_total = time.time() # PERFORMANCE CHECK
+
+        # Create display labels
+        month_sessions = [
+            sess for sess in self.user.data['sesiones']
+            if dm.get_session_month(sess) == month and sess[2] != 0
+        ]
+        
+        for index, session in enumerate(reversed(month_sessions)):
+            SessionData(self, dm.get_displayable_session(self.user, session)).grid(row = index, column=0, sticky='nsew', pady=2)
+
+        # print('total:', time.time() - frames_total) # PERFORMANCE CHECK
 
         # Show/Hide no data message
         if len(self.winfo_children()) > 0: return
+
         gui.WarningLabel(self, 'No hay sesiones guardadas.', (FONT, FONTS['small'] * 1.5, "bold"), COLORS['bg']
         ).grid(row=0,sticky='ns')

@@ -29,7 +29,7 @@ class Timer:
             if self.paused:
                 self.pause_elapsed = int(time.time() - self.start_pausetime)
             delta = int(time.time() - self.start_time - self.pause_elapsed)
-            dm.record(self.user, self.selection, delta)
+            dm.record(self.user, dm.get_piece_id(self.user, self.selection), delta)
 
             self.running = False
             self.paused = False

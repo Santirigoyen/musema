@@ -1,4 +1,4 @@
-from back.DataManager import *
+import back.DataManager as dm
 from back.User import User
 from customtkinter import *
 from gui.StatsGui import StatsFrame
@@ -7,14 +7,14 @@ from gui.PiecesGui import PieceFrame
 from PIL import Image
 import gui.GuiTemplates as gui
 
-COLORS = settings['colors']
-FONTS = settings['fontsizes']
-FONT = settings['font']
+COLORS = dm.settings['colors']
+FONTS = dm.settings['fontsizes']
+FONT = dm.settings['font']
 
 IMGs = {
-    'play': Image.open(settings['images']['play']),
-    'piano': Image.open(settings['images']['piano']),
-    'stats': Image.open(settings['images']['stats']),
+    'play': Image.open(dm.settings['images']['play']),
+    'piano': Image.open(dm.settings['images']['piano']),
+    'stats': Image.open(dm.settings['images']['stats']),
 }
 on_session = False
 
@@ -26,7 +26,6 @@ class Sidebar(CTkFrame):
 
         self.grid_rowconfigure((0,1,2,3,4,5,6,7,8,9,10,11), weight=1, uniform='a')
         self.grid_columnconfigure(0, weight=1)
-
 
         # Menu Buttons
         self.options = [
@@ -118,7 +117,7 @@ class LoginFrame(CTkFrame):
     
     # Detect Enter
     def check_input(self, e):
-        name = self.textbox.get()
+        name = self.textbox.get().strip().lower()
         if name == '': return
         self.app.focus()
         self.app.user = User(name)
@@ -140,7 +139,7 @@ class App(CTk):
     def window_config(self):
 
         self.title('Musema')
-        self.iconbitmap(default=settings['images']['icon'])
+        self.iconbitmap(default=dm.settings['images']['icon'])
 
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
@@ -156,13 +155,13 @@ class App(CTk):
     
     def access(self):
 
-        offset_x = (settings['app_size'][0] - 500) // 2
-        offset_y = (settings['app_size'][1] - 400) // 2
+        offset_x = (dm.settings['app_size'][0] - 500) // 2
+        offset_y = (dm.settings['app_size'][1] - 400) // 2
 
         self.geometry(
-            f'{settings['app_size'][0]}x{settings['app_size'][1]}' + # Size
+            f'{dm.settings['app_size'][0]}x{dm.settings['app_size'][1]}' + # Size
             f'+{self.winfo_x() - offset_x}+{self.winfo_y() - offset_y}') # Pos
-            
+
         self.resizable(False, False)
         self.main.setup(self.user)
         self.main.tkraise()

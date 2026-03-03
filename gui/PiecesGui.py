@@ -1,10 +1,10 @@
 from customtkinter import *
-from back.DataManager import *
+import back.DataManager as dm
 import gui.GuiTemplates as gui
 
-COLORS = settings['colors']
-FONTS = settings['fontsizes']
-FONT = settings['font']
+COLORS = dm.settings['colors']
+FONTS = dm.settings['fontsizes']
+FONT = dm.settings['font']
 
 class PieceFrame(CTkFrame):
     def __init__(self, parent):
@@ -14,7 +14,7 @@ class PieceFrame(CTkFrame):
         
         self.user = parent.user
 
-        self.setup_labels() # optimized
+        self.setup_labels()
 
         # Selection
         self.selectables = {}
@@ -40,7 +40,7 @@ class PieceFrame(CTkFrame):
         self.entry = gui.EntryBox(self, 'Añadir pieza', 405)
         self.entry.grid(row=6, sticky='nsw', padx=80, pady=(0, 20))
         
-        self.entry.bind("<Escape>", lambda e: self.focus())
+        self.entry.bind("<Escape>", self.focus)
         self.entry.bind("<Return>", lambda e: self.piece_add())
 
         # Length warinig
@@ -61,7 +61,10 @@ class PieceFrame(CTkFrame):
         self.selectables.clear()
         self.checkboxes.clear()
 
-        for piece in self.user.data['piezas']:
+        for item in self.user.data['piezas'].values():
+            if not item[1]: continue # If active
+            piece = item[0]
+
             # Create label per piece
             self.selectables[piece] = gui.BaseLabel(self.scroller, piece, fg_color=COLORS['dark'])
             self.selectables[piece].grid(row=len(self.selectables) - 1, column=0, sticky='w', padx=10)
@@ -82,15 +85,11 @@ class PieceFrame(CTkFrame):
     def piece_add(self):
 
         piece = self.entry.get()
-        if piece == '' or piece in self.user.data['piezas']: return
+        dm.create_piece(self.user, piece)
 
         if len(piece) > 25:
             self.warn_over_length()
             return
-        
-        # Add piece
-        self.user.data['piezas'][piece] = 0
-        save_data()
 
         self.entry.delete(0, END)
         self.piece_update()
@@ -108,8 +107,9 @@ class PieceFrame(CTkFrame):
         
         # Delete pieces
         for piece in to_delete:
-            self.user.data['piezas'].pop(piece, None)
-        save_data()
+            dm.erase_piece(self.user, piece)
+        
+        dm.raw_save()
 
         self.piece_update()
     

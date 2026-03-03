@@ -1,21 +1,21 @@
-from back.DataManager import *
+import back.DataManager as dm
 from customtkinter import *
 from PIL import Image
 
-COLORS = settings['colors']
-FONTS = settings['fontsizes']
-FONT = settings['font']
+COLORS = dm.settings['colors']
+FONTS = dm.settings['fontsizes']
+FONT = dm.settings['font']
 
 IMGs = {
-    'trash': Image.open(settings['images']['trash']),
-    'plus': Image.open(settings['images']['plus']),
-    'play': Image.open(settings['images']['play']),
-    'pause': Image.open(settings['images']['pause']),
-    'back': Image.open(settings['images']['back']),
-    'reload': Image.open(settings['images']['reload']),
-    'export': Image.open(settings['images']['export']),
-    'right_arrow': Image.open(settings['images']['right_arrow']),
-    'left_arrow': Image.open(settings['images']['left_arrow'])
+    'trash': Image.open(dm.settings['images']['trash']),
+    'plus': Image.open(dm.settings['images']['plus']),
+    'play': Image.open(dm.settings['images']['play']),
+    'pause': Image.open(dm.settings['images']['pause']),
+    'back': Image.open(dm.settings['images']['back']),
+    'reload': Image.open(dm.settings['images']['reload']),
+    'export': Image.open(dm.settings['images']['export']),
+    'right_arrow': Image.open(dm.settings['images']['right_arrow']),
+    'left_arrow': Image.open(dm.settings['images']['left_arrow'])
 }
 
 class BaseLabel(CTkLabel):

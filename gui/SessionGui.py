@@ -1,17 +1,17 @@
 from customtkinter import *
-from back.DataManager import *
+import back.DataManager as dm
 from back.SessionTimer import Timer
 import gui.GuiTemplates as gui
 from PIL import Image
 
-COLORS = settings['colors']
-FONTS = settings['fontsizes']
-FONT = settings['font']
+COLORS = dm.settings['colors']
+FONTS = dm.settings['fontsizes']
+FONT = dm.settings['font']
 IMGs = {
-    'play': Image.open(settings['images']['play']),
-    'finish': Image.open(settings['images']['finish']),
-    'pause': Image.open(settings['images']['pause']),
-    'back': Image.open(settings['images']['back'])
+    'play': Image.open(dm.settings['images']['play']),
+    'finish': Image.open(dm.settings['images']['finish']),
+    'pause': Image.open(dm.settings['images']['pause']),
+    'back': Image.open(dm.settings['images']['back'])
 }
 
 class SessionFrame(CTkFrame):
@@ -32,7 +32,7 @@ class SessionFrame(CTkFrame):
         gui.TitleLabel(self, 'Sesión').grid(row=1, sticky='w', padx=90)
 
         # Dropdown
-        pieces = list(self.user.data['piezas'])
+        pieces = dm.get_actives(self.user)
 
         self.choice = gui.Dropdown(self, 380, 55,
             pieces, len(pieces) == 0)
@@ -43,13 +43,17 @@ class SessionFrame(CTkFrame):
         self.next.grid(row=2, sticky='e', padx=80)
 
     def start_session(self):
+
         if len(self.user.data['piezas']) > 0:
             self.parent.start_session(self.choice.get())
 
     def update_options(self):
-        self.choice.configure(values=['...'] if len(self.user.data['piezas'])==0 else list(self.user.data['piezas']))
+
+        # Update dropdown default and values
+        self.choice.configure(values=['...'] if len(self.user.data['piezas']) == 0 else dm.get_actives(self.user))
+
         if len(self.user.data['piezas']) > 0:
-            self.choice.set(list(self.user.data['piezas'].keys())[0])
+            self.choice.set(dm.get_actives(self.user)[0])
         else: self.choice.set('...')
 
 class TimerFrame(CTkFrame):

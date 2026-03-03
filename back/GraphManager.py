@@ -1,17 +1,19 @@
 import matplotlib.pyplot as plt
+import back.DataManager as dm
 
 def monthly_pie_chart(user, month_title, month):
     if len(user.data['sesiones']) == 0: return
-    month_str = f"-{month:02d}-" # Feb: -02-
 
     data = {}
-    for date, sessions in reversed(user.data['sesiones'].items()):
-        if not month_str in date: continue
+    for session in reversed(user.data['sesiones']):
+        if month != dm.get_session_month(session): continue
 
-        for name, dur in sessions:
-            total = data.get(name, 0) + dur
-            if total == 0: continue
-            data[name] = total
+        _, piece_id, dur = session
+        name = user.data['piezas'][piece_id][0]
+
+        total = data.get(name, 0) + dur
+        if total == 0: continue
+        data[name] = total
     if len(data) == 0: return
 
     vals = data.values()
@@ -34,11 +36,13 @@ def piece_graph(user, piece):
     if len(user.data['sesiones']) == 0: return
 
     data = {}
-    for date, sessions in user.data['sesiones'].items():
-        for name, dur in sessions:
-            if name == piece: 
-                key = f"{int(date.split('-')[2])}/{int(date.split('-')[1])}" # 2026-02-16 → 16/2
-                data[key] = dur / 60
+    for session in user.data['sesiones']:
+        date, piece_id, dur = session
+        name = user.data['piezas'][piece_id][0]
+
+        if name == piece: 
+            key = dm.get_displayable_session(user, session)[0] # day/month
+            data[key] = dur / 60
     
     one_day = True
     for k, v in data.items():
