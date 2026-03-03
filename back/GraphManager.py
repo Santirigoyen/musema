@@ -36,16 +36,20 @@ def piece_graph(user, piece):
     if len(user.data['sesiones']) == 0: return
 
     data = {}
-    for session in user.data['sesiones']:
-        date, piece_id, dur = session
+    for session in reversed(user.data['sesiones']):
+        _, piece_id, dur = session
         name = user.data['piezas'][piece_id][0]
 
-        if name == piece: 
+        if name == piece:
             key = dm.get_displayable_session(user, session)[0] # day/month
             data[key] = dur / 60
+        
+        if len(data) >= 7:
+            break
+    data = dict(sorted(data.items()))
     
     one_day = True
-    for k, v in data.items():
+    for k in data.keys():
         if k != list(data.keys())[0]: one_day = False
     if one_day: return
 
